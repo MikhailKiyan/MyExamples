@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  ms-sql-server-db:
+    container_name: ms-sql-server-db
+    image: mcr.microsoft.com/mssql/server:2019-CU14-ubuntu-20.04
+    restart: unless-stopped
+    ports:
+      - "1433:1433"
+      - "5022:5022"
+    environment:
+      SA_PASSWORD: "VeryStr0ngP@$$w0rd"
+      ACCEPT_EULA: "Y"
+      TZ: America/Los_Angeles
+    volumes:
+      - ${DOCKER_PATH}/MsSqlServer/BackUp:/var/opt/mssql/backup
+      - ${DOCKER_PATH}/MsSqlServer/Data:/var/opt/mssql/data
+
