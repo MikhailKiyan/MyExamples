@@ -1,0 +1,13 @@
+version: "3.0"
+services:
+  seq:
+    image: datalust/seq
+    hostname: seq
+    container_name: seq
+    environment:
+      ACCEPT_EULA: Y
+    volumes:
+      - ${DOCKER_PATH}/SEQ/Data:/data
+    ports:
+      - 5341:5341
+      - 5340:80
