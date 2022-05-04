@@ -1,0 +1,19 @@
+version: "3.2"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbit-mq-server
+    container_name: rabbit-mq-server
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ${DOCKER_PATH}/RabbitMQ/Data/:/var/lib/rabbitmq/
+      - ${DOCKER_PATH}/RabbitMQ/Log/:/var/log/rabbitmq
+    networks:
+      - rabbit-mq-net
+    restart: unless-stopped
+
+networks:
+  rabbit-mq-net:
+    driver: bridge

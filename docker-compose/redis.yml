@@ -1,9 +1,33 @@
 version: '3'
 services:
-  redis:
-    image: redis:latest
+  redis-server:
+    image: "redis:alpine"
+    hostname: redis-server
+    container_name: redis-server
+    restart: unless-stopped
     ports:
-      - 6379:6379
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - redis-net
     volumes:
-      - ./config/redis.conf:/redis.conf
-    command: [ "redis-server", "/redis.conf" ]
+      - ${DOCKER_PATH}/Redis/RedisServerData:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    hostname: redis-commander
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - redis-net
+    depends_on:
+      - redis-server
+    volumes:
+      - ${DOCKER_PATH}/Redis/RedisCommanderConfig/local-production.json:/redis-commander/config/local-production.json
+
+networks:
+  redis-net:
+    driver: bridge

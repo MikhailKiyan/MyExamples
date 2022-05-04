@@ -1,6 +1,7 @@
 version: "3.7"
 services:
   ms-sql-server-db:
+    hostname: ms-sql-server-db
     container_name: ms-sql-server-db
     image: mcr.microsoft.com/mssql/server:2019-CU14-ubuntu-20.04
     restart: unless-stopped

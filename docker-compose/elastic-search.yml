@@ -2,7 +2,9 @@ version: "3.0"
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
-    container_name: elasticsearch
+    hostname: elastic-search-server
+    container_name: elastic-search-server
+    restart: unless-stopped
     environment:
       - cluster.name=elasticsearch-cluster
       - bootstrap.memory_lock=true
@@ -14,8 +16,8 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-      - elasticsearch-config:/usr/share/elasticsearch/config
+      - ${DOCKER_PATH}/ElasticSearch/ElasticSearchData:/usr/share/elasticsearch/data
+      - ${DOCKER_PATH}/ElasticSearch/ElasticSearchConfig:/usr/share/elasticsearch/config
     ports:
       - "9200:9200"
     networks:
@@ -24,10 +26,11 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:7.15.1
     container_name: kibana
+    restart: unless-stopped
     environment:
       - ELASTICSEARCH_HOSTS:http://elasticsearch:9200
     volumes:
-      - kibana-config:/usr/share/kibana/config
+      - ${DOCKER_PATH}/ElasticSearch/KibanaConfig:/usr/share/kibana/config
     ports:
       - "5601:5601"
     networks:
@@ -35,15 +38,6 @@ services:
     depends_on:
       - elasticsearch
 
-volumes:
-  elasticsearch-data:
-    driver: local
-
-  elasticsearch-config:
-    driver: local
-  
-  kibana-config:
-    driver: local
-
 networks:
   elasticsearch-net:
+    driver: bridge
