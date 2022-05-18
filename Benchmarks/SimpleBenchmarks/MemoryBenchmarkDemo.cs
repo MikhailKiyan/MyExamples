@@ -4,9 +4,13 @@ using BenchmarkDotNet.Attributes;
 namespace MyExaples.Benchmark;
 
 [MemoryDiagnoser]
-public class MemoryBenchmarkerDemo {
+public class MemoryBenchmarkDemo {
     int NumberOfItems = 100_000;
 
+    /// <summary>
+    /// Performence test of concatination using StringBuilder
+    /// </summary>
+    /// <returns></returns>
     [Benchmark]
     public string ConcatStringsUsingStringBuilder() {
         var sb = new StringBuilder();
@@ -16,6 +20,10 @@ public class MemoryBenchmarkerDemo {
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Performence test of concatination using List of String
+    /// </summary>
+    /// <returns></returns>
     [Benchmark]
     public string ConcatStringsUsingGenericList() {
         var list = new List<string>(NumberOfItems);
