@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using WebApi.Extensions;
+using Microsoft.Extensions.FileProviders;
 
 namespace WebApiPlusAngular.WebApi;
 
@@ -19,10 +20,7 @@ public class Startup
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        /*services.AddSpaStaticFiles(configuration =>
-        {
-            configuration.RootPath = "SpaStaticFiles";
-        });*/
+        services.AddApplicationOptions();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,22 +35,15 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
-
-        //app.UseStaticFiles();
-        //app.UseSpaStaticFiles();
-        /*app.UseSpa(spa => {
-            spa.Options.SourcePath = ".";
-        });*/
-
         app.UseRouting();
         app.UseEndpoints(endpoints =>{
-            // endpoints.MapFallbackToFile("index.html");
             endpoints.MapControllers();
         });
 
-        //app.UseBackendApplication();
+        app.UseBackendApplication();
+        
 
-        if (env.IsDevelopment()) {
+        /*if (env.IsDevelopment()) {
             app.UseSpa(spa => {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
@@ -64,6 +55,8 @@ public class Startup
                 spa.UseAngularCliServer("start");
 
             });
-        }
+        }*/
+
+        // app.UseStaticFiles();
     }
 }

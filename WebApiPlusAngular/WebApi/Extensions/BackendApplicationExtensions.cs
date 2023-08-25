@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.Extensions.Options;
+using WebApi.Configuration;
 
 namespace WebApi.Extensions;
 
@@ -8,24 +10,31 @@ public static class BackendApplicationExtensions
     {
         var config = app.ApplicationServices.GetRequiredService<IConfiguration>();
         var env = app.ApplicationServices.GetRequiredService<IHostEnvironment>();
-        var spaConfig = config.GetSection("SPA")?.GetValue<string>("start")?.ToLowerInvariant();
+        var spaOptions = app.ApplicationServices.GetRequiredService<SpaOptions>();
+        switch ((env.IsProduction(), spaOptions.Config))
+        {
+            case (false, SpaConfiguration.UseProxyToDevServer): {
+                var spaConfig = (SpaUseProxyToDevServerOptions)spaOptions;
+                app.UseSpa(spa => { spa.UseProxyToSpaDevelopmentServer(spaConfig.ProxyUrl); });
+                break;
+            }
 
-        
-        /*
-        if (env.IsDevelopment()) {
-            app.UseSpa(spa => {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-                
-                
-                // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                
-                spa.Options.SourcePath = "../UI";
-                spa.UseAngularCliServer("start");
+            case (false, SpaConfiguration.LaunchLocalDevServer): {
+                var spaConfig = (SpaLaunchLocalDevServer)spaOptions;
+                app.UseSpa(spa => {
+                    spa.Options.SourcePath = spaConfig.Path.ToString();
+                    spa.UseAngularCliServer(spaConfig.NpmCommand);
+                });
+                break;
+            }
 
-            });
+            default:
+            case (_, SpaConfiguration.Default):
+            case (_, SpaConfiguration.StaticFiles): {
+                app.UseEndpoints(endpoints => endpoints.MapFallbackToFile("index.html"));
+                app.UseStaticFiles();
+                break;
+            }
         }
-        */
     }
-
 }
