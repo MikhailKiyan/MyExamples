@@ -1,52 +1,23 @@
 namespace WebApiPlusAngular.WebApi;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 public class Program
 {
-    public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
+    public static async Task Main(string[] args) {
+        var host = CreateHostBuilder(args).Build();
+        await host.StartAsync();
+        var logger = host.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("It started with Process Id: {processId}", Environment.ProcessId);
+        logger.LogInformation("It started on machine '{machineName}', user '{user}', and user domen '{userDomen}'",
+            Environment.MachineName, Environment.UserName, Environment.UserDomainName);
+        try {
+            await host.WaitForShutdownAsync();
+        } catch (Exception ex) {
+            logger.LogCritical(ex, "Aplication was terminated");
+        }
+        logger.LogInformation("Application has finished with exit code '{exitCode}'", Environment.ExitCode);
+    }
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
-      Host
-        .CreateDefaultBuilder(args)
-        .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
 }
-
-
-/*
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-app.UseSwagger();
-app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.UseSpa
-
-app.Run();
-*/
