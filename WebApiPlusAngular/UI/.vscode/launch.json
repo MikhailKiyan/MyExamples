@@ -8,8 +8,8 @@
       "request": "attach",
       "type": "chrome",
       "webRoot": "${workspaceFolder}"
-    },
-    /*{
+    }/*,
+    {
       "name": "Launch Chrome",
       "request": "launch",
       "type": "chrome",

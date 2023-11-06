@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,7 +50,9 @@ public class Startup
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
                 spa.Options.SourcePath = "../UI";
-                spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                spa.UseAngularCliServer(npmScript: "start");
+
+                // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
             });
         }
     }

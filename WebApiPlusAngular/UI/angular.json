@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "english-world": {
+    "web-api-plus-angular": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/english-world",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,19 +72,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "english-world:build:production"
+              "browserTarget": "web-api-plus-angular:build:production"
             },
             "development": {
-              "browserTarget": "english-world:build:development"
+              "browserTarget": "web-api-plus-angular:build:development"
             }
           },
           "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "english-world:build"
-          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -107,5 +101,5 @@
       }
     }
   },
-  "defaultProject": "english-world"
+  "defaultProject": "web-api-plus-angular"
 }
