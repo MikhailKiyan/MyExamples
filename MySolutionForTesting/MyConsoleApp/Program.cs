@@ -1,14 +1,13 @@
-﻿namespace MyConsoleApp;
-
-using MyConsoleApp.Extensions;
-
+﻿using MyConsoleApp.Extensions;
 using System.Diagnostics;
+
+namespace MyConsoleApp;
 
 internal class Program
 {
     static async Task<int> Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        await Console.Out.WriteLineAsync("Started").ConfigureAwait(false);
 
         var ct = CancellationToken.None;
         var testSet = Enumerable.Range(0, 1000).ToArray();
@@ -19,23 +18,22 @@ internal class Program
             async (item, basket) =>
             {
                 var threadId = Thread.CurrentThread.ManagedThreadId;
-                var envThreadId = Environment.CurrentManagedThreadId;
                 var taskId = Task.CurrentId;
-                await Console.Out.WriteLineAsync($"Item is {item}, thread is {threadId}/{envThreadId}, task is {taskId}: starting")
+                await Console.Out.WriteLineAsync($"Item is {item}, thread is {threadId}, task is {taskId}: starting")
                     .ConfigureAwait(false);
                 var watcher = Stopwatch.StartNew();
-                var response = await basket.Client.GetAsync("https://google.com")
+                var response = await basket.Client.GetAsync("http://localhost")
                     .ConfigureAwait(false);
                 watcher.Stop();
                 threadId = Thread.CurrentThread.ManagedThreadId;
-                envThreadId = Environment.CurrentManagedThreadId;
                 taskId = Task.CurrentId;
-                await Console.Out.WriteLineAsync($"Item is {item}, thread is {threadId}/{envThreadId}, task is {taskId}: finished, took {watcher.Elapsed}")
+                await Console.Out.WriteLineAsync($"Item is {item}, thread is {threadId}, task is {taskId}: finished, took {watcher.Elapsed}")
                     .ConfigureAwait(false);
             },
             basket => basket.Client.Dispose(),
-            ct);
+            ct).ConfigureAwait(false);
 
+        await Console.Out.WriteLineAsync("Finished").ConfigureAwait(false);
         return 0;
     }
 }
