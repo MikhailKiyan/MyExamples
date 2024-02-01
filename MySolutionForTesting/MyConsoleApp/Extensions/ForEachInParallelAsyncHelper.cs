@@ -41,8 +41,11 @@ public static partial class EnumerableExtensions
                 var basketConfiguration = basketCreation();
                 // TODO: don't wait to start the next task
                 // don't attach the created task to the current task.
-                // await Task.Run(() => InnerProcess(basketConfiguration, process).ConfigureAwait(false));
-                await InnerProcess(basketConfiguration, process).ConfigureAwait(false);
+                // await Task.Run(() => InnerProcess(basketConfiguration, process));
+                // await InnerProcess(basketConfiguration, process).ConfigureAwait(false);
+                // await await Task<Task?>.Factory.StartNew(() => InnerProcess(basketConfiguration, process), ct, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                var taskFactory = new TaskFactory(ct, TaskCreationOptions.LongRunning, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                await await taskFactory.StartNew(() => InnerProcess(basketConfiguration, process), ct);
                 if (basketDesposing is not null && basketConfiguration is not null) basketDesposing(basketConfiguration);
             }).ToArray();
             await Task.WhenAll(tasks).ConfigureAwait(false);

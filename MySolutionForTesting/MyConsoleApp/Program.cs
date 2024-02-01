@@ -11,15 +11,21 @@ internal class Program
 
         var ct = CancellationToken.None;
         var testSet = Enumerable.Range(0, 1000).ToArray();
+        int basketIdCounter = -1;
 
         await testSet.ForEachInParallelAsync(
-            100,
-            () => new { Client = new HttpClient() },
+            10,
+            () => new
+            {
+                Client = new HttpClient(),
+                BasketId = Interlocked.Increment(ref basketIdCounter)
+            },
             async (item, basket) =>
             {
+                var basketId = basket.BasketId;
                 var threadId = Thread.CurrentThread.ManagedThreadId;
                 var taskId = Task.CurrentId;
-                await Console.Out.WriteLineAsync($"Item is {item}, thread is {threadId}, task is {taskId}: starting")
+                await Console.Out.WriteLineAsync($"Item is {item}, basket is {basketId}, thread is {threadId}, task is {taskId}: starting")
                     .ConfigureAwait(false);
                 var watcher = Stopwatch.StartNew();
                 var response = await basket.Client.GetAsync("http://localhost")
@@ -27,7 +33,7 @@ internal class Program
                 watcher.Stop();
                 threadId = Thread.CurrentThread.ManagedThreadId;
                 taskId = Task.CurrentId;
-                await Console.Out.WriteLineAsync($"Item is {item}, thread is {threadId}, task is {taskId}: finished, took {watcher.Elapsed}")
+                await Console.Out.WriteLineAsync($"Item is {item}, basket is {basketId}, thread is {threadId}, task is {taskId}: finished, took {watcher.Elapsed}")
                     .ConfigureAwait(false);
             },
             basket => basket.Client.Dispose(),
