@@ -1,0 +1,13 @@
+version: "3.0"
+services:
+  nginx:
+    image: nginx:alpine
+    hostname: nginx
+    container_name: nginx
+    ports:
+      - 8880:80
+    volumes:
+      - ${DOCKER_PATH}/NGINX/HTML:/usr/share/nginx/html
+      - ${DOCKER_PATH}/NGINX/CONF/mime.types:/etc/nginx/mime.types
+      - ${DOCKER_PATH}/NGINX/CONF/nginx.conf:/etc/nginx/nginx.conf
+      - ${DOCKER_PATH}/NGINX/CONF/debug.log:/var/log/nginx/debug.log
